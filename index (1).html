@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="个人作品集 - 全栈开发者，专注于量化投资与金融科技">
+  <meta name="author" content="Lee">
+  <title>Lee - 全栈开发者</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ========================================
+       Design Tokens - Trae Design System
+    ======================================== */
+    :root {
+      /* Colors */
+      --color-bg: #0A0B0D;
+      --color-card: #121314;
+      --color-brand: #32F08C;
+      --color-brand-hover: #0FDC78;
+      --color-text-primary: #F5F9FE;
+      --color-text-secondary: #A6AAB5;
+      --color-text-tertiary: #787D87;
+      --color-inverted: #EDEFF2;
+      --color-overlay-1: rgba(255, 255, 255, 0.04);
+      --color-overlay-2: rgba(255, 255, 255, 0.08);
+      --color-overlay-3: rgba(255, 255, 255, 0.12);
+      --color-overlay-hover: rgba(255, 255, 255, 0.06);
+      
+      /* Typography */
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+      
+      /* Spacing (8px grid) */
+      --space-1: 8px;
+      --space-2: 16px;
+      --space-3: 24px;
+      --space-4: 32px;
+      --space-5: 40px;
+      --space-6: 60px;
+      
+      /* Border Radius */
+      --radius-sm: 3px;
+      --radius-md: 6px;
+      
+      /* Shadows */
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+      
+      /* Transitions */
+      --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      /* Layout */
+      --max-width: 1600px;
+      --nav-height: 64px;
+    }
+
+    /* ========================================
+       Reset & Base Styles
+    ======================================== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--color-text-primary);
+      background-color: var(--color-bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ========================================
+       Animations
+    ======================================== */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes gradientSlide {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 1.5s ease-in-out forwards;
+      opacity: 0;
+    }
+
+    .fade-in-delay-1 { animation-delay: 0.2s; }
+    .fade-in-delay-2 { animation-delay: 0.4s; }
+    .fade-in-delay-3 { animation-delay: 0.6s; }
+    .fade-in-delay-4 { animation-delay: 0.8s; }
+
+    /* ========================================
+       Layout
+    ======================================== */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-3);
+    }
+
+    section {
+      padding: var(--space-6) 0;
+    }
+
+    /* ========================================
+       Navigation
+    ======================================== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-height);
+      z-index: 1000;
+      transition: background-color var(--transition-fast), backdrop-filter var(--transition-fast);
+    }
+
+    .nav.scrolled {
+      background-color: rgba(10, 11, 13, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .nav__logo {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-brand);
+      letter-spacing: -0.02em;
+    }
+
+    .nav__links {
+      display: flex;
+      gap: var(--space-4);
+      list-style: none;
+    }
+
+    .nav__link {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      transition: color var(--transition-fast);
+    }
+
+    .nav__link:hover {
+      color: var(--color-brand);
+    }
+
+    /* ========================================
+       Buttons
+    ======================================== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-1);
+      font-family: var(--font-ui);
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-decoration: none;
+    }
+
+    .btn--brand {
+      background-color: var(--color-brand);
+      color: var(--color-bg);
+      height: 40px;
+      padding: 0 var(--space-3);
+    }
+
+    .btn--brand:hover {
+      background-color: var(--color-brand-hover);
+    }
+
+    .btn--primary {
+      background-color: var(--color-inverted);
+      color: var(--color-bg);
+      height: 40px;
+      padding: 0 var(--space-3);
+    }
+
+    .btn--primary:hover {
+      background-color: #fff;
+    }
+
+    .btn--secondary {
+      background-color: transparent;
+      color: var(--color-text-primary);
+      height: 40px;
+      padding: 0 var(--space-3);
+      border: 1px solid #fff;
+    }
+
+    .btn--secondary:hover {
+      border-color: var(--color-brand);
+      color: var(--color-brand);
+    }
+
+    .btn--tertiary {
+      background-color: transparent;
+      color: var(--color-text-secondary);
+      height: 32px;
+      padding: 0 var(--space-2);
+      font-size: 13px;
+    }
+
+    .btn--tertiary:hover {
+      color: var(--color-brand);
+    }
+
+    .btn--sm { height: 32px; padding: 0 var(--space-2); }
+    .btn--lg { height: 48px; padding: 0 var(--space-4); font-size: 15px; }
+
+    .btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* ========================================
+       Hero Section
+    ======================================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: var(--nav-height);
+    }
+
+    .hero__content {
+      max-width: 800px;
+    }
+
+    .hero__title {
+      font-size: 72px;
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-3);
+    }
+
+    .hero__title span {
+      color: var(--color-brand);
+    }
+
+    .hero__subtitle {
+      font-size: 20px;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-4);
+    }
+
+    .hero__slogan {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: var(--space-5);
+      background: linear-gradient(90deg, var(--color-brand), #00D4AA, var(--color-brand));
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientSlide 3s ease-in-out infinite;
+    }
+
+    .hero__actions {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+
+    /* ========================================
+       About Section
+    ======================================== */
+    .about {
+      background-color: var(--color-card);
+    }
+
+    .about__content {
+      max-width: 800px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-brand);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space-3);
+    }
+
+    .about__text {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--color-text-secondary);
+    }
+
+    .about__text p {
+      margin-bottom: var(--space-2);
+    }
+
+    .about__text strong {
+      color: var(--color-text-primary);
+      font-weight: 500;
+    }
+
+    /* ========================================
+       Projects Section
+    ======================================== */
+    .projects__grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-3);
+    }
+
+    .project-card {
+      position: relative;
+      background: linear-gradient(113deg, rgba(255, 255, 255, 0.1) -2.15%, rgba(255, 255, 255, 0) 35.5%);
+      border: 1px solid var(--color-overlay-3);
+      border-radius: var(--radius-sm);
+      padding: var(--space-3);
+      transition: transform var(--transition-fast), background var(--transition-fast);
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      background: linear-gradient(113deg, var(--color-overlay-hover) -2.15%, rgba(255, 255, 255, 0) 35.5%);
+    }
+
+    .project-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-2);
+    }
+
+    .project-card__title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .project-card__external {
+      color: var(--color-text-tertiary);
+      transition: color var(--transition-fast);
+    }
+
+    .project-card:hover .project-card__external {
+      color: var(--color-brand);
+    }
+
+    .project-card__external svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .project-card__desc {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-3);
+    }
+
+    .project-card__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1);
+      margin-bottom: var(--space-3);
+    }
+
+    .project-card__link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    /* ========================================
+       Tags
+    ======================================== */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      font-size: 14px;
+      padding: 4px 12px;
+      background-color: var(--color-overlay-2);
+      border: 1px solid var(--color-overlay-3);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-secondary);
+      transition: border-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .tag:hover {
+      border-color: var(--color-brand);
+      color: var(--color-text-primary);
+    }
+
+    .tag--code {
+      font-family: var(--font-code);
+      font-size: 13px;
+    }
+
+    /* ========================================
+       Skills Section
+    ======================================== */
+    .skills {
+      background-color: var(--color-card);
+    }
+
+    .skills__grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    /* ========================================
+       Footer
+    ======================================== */
+    .footer {
+      padding: var(--space-4) 0;
+      border-top: 1px solid var(--color-overlay-1);
+    }
+
+    .footer__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer__copy {
+      font-size: 12px;
+      color: var(--color-text-tertiary);
+    }
+
+    .footer__links {
+      display: flex;
+      gap: var(--space-3);
+      list-style: none;
+    }
+
+    .footer__link {
+      font-size: 12px;
+      color: var(--color-text-tertiary);
+      transition: color var(--transition-fast);
+    }
+
+    .footer__link:hover {
+      color: var(--color-brand);
+    }
+
+    .footer__link svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ========================================
+       Responsive Design
+    ======================================== */
+    @media (max-width: 1279px) {
+      :root {
+        --space-6: 48px;
+      }
+
+      .hero__title {
+        font-size: 56px;
+      }
+
+      .hero__slogan {
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 743px) {
+      :root {
+        --space-6: 40px;
+      }
+
+      .hero__title {
+        font-size: 42px;
+      }
+
+      .hero__subtitle {
+        font-size: 18px;
+      }
+
+      .projects__grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav__links {
+        gap: var(--space-3);
+      }
+    }
+
+    @media (max-width: 479px) {
+      .container {
+        padding: 0 var(--space-2);
+      }
+
+      section {
+        padding: var(--space-5) 0;
+      }
+
+      .hero__title {
+        font-size: 36px;
+      }
+
+      .hero__subtitle {
+        font-size: 16px;
+      }
+
+      .hero__actions {
+        flex-direction: column;
+      }
+
+      .hero__actions .btn {
+        width: 100%;
+      }
+
+      .about__text {
+        font-size: 16px;
+      }
+
+      .footer__inner {
+        flex-direction: column;
+        gap: var(--space-2);
+        text-align: center;
+      }
+    }
+
+    /* ========================================
+       Utility Classes
+    ======================================== */
+    .text-brand { color: var(--color-brand); }
+    .text-secondary { color: var(--color-text-secondary); }
+    .text-tertiary { color: var(--color-text-tertiary); }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="container nav__inner">
+      <a href="#" class="nav__logo">Lee.</a>
+      <ul class="nav__links">
+        <li><a href="#about" class="nav__link">关于我</a></li>
+        <li><a href="#projects" class="nav__link">项目</a></li>
+        <li><a href="#skills" class="nav__link">技能</a></li>
+        <li><a href="#contact" class="nav__link">联系</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero__content">
+        <h1 class="hero__title fade-in">
+          Hi, I'm <span>Lee</span>
+        </h1>
+        <p class="hero__subtitle fade-in fade-in-delay-1">
+          全栈开发者 · 量化投资爱好者
+        </p>
+        <p class="hero__slogan fade-in fade-in-delay-2">
+          用代码构建高效工具，让数据驱动投资决策
+        </p>
+        <div class="hero__actions fade-in fade-in-delay-3">
+          <a href="#projects" class="btn btn--brand">
+            查看项目
+          </a>
+          <a href="#contact" class="btn btn--secondary">
+            联系我
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about" id="about">
+    <div class="container">
+      <h2 class="section-title fade-in">关于我</h2>
+      <div class="about__content fade-in fade-in-delay-1">
+        <div class="about__text">
+          <p>
+            我是一名专注于<strong>全栈开发</strong>和<strong>量化投资</strong>的技术爱好者。
+            对金融科技充满热情，喜欢用代码解决实际问题。
+          </p>
+          <p>
+            拥有丰富的<strong>前端开发</strong>经验，熟悉 React、Next.js 等现代框架；
+            同时也在<strong>后端</strong>和<strong>数据可视化</strong>方面有深入实践。
+            热衷于将复杂的金融数据转化为直观易用的工具。
+          </p>
+          <p>
+            持续学习新技术，追求代码质量与用户体验的平衡。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section class="projects" id="projects">
+    <div class="container">
+      <h2 class="section-title fade-in">项目展示</h2>
+      <div class="projects__grid">
+        <!-- Project 1: 美元理财 -->
+        <article class="project-card fade-in fade-in-delay-1">
+          <div class="project-card__header">
+            <h3 class="project-card__title">美元理财 · 收益追踪</h3>
+            <a href="https://lee-version.github.io/usd_investment_web/" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="project-card__external"
+               aria-label="在新标签页打开项目">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+          <p class="project-card__desc">
+            美元外汇投资管理工具，支持买入记录、汇率追踪、收益计算与 Plotly 数据可视化
+          </p>
+          <div class="project-card__tags">
+            <span class="tag tag--code">JavaScript</span>
+            <span class="tag tag--code">Plotly.js</span>
+            <span class="tag tag--code">Supabase</span>
+            <span class="tag tag--code">GitHub Pages</span>
+          </div>
+          <a href="https://lee-version.github.io/usd_investment_web/" 
+             target="_blank" 
+             rel="noopener noreferrer" 
+             class="btn btn--tertiary project-card__link">
+            查看项目
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </article>
+
+        <!-- Project 2: 基估宝 -->
+        <article class="project-card fade-in fade-in-delay-2">
+          <div class="project-card__header">
+            <h3 class="project-card__title">基估宝 V1.4.1</h3>
+            <a href="https://lee-version.github.io/real_time_fund/" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="project-card__external"
+               aria-label="在新标签页打开项目">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+          <p class="project-card__desc">
+            实时基金/ETF估值追踪工具，支持 OCR 识别、多数据源切换、分组管理
+          </p>
+          <div class="project-card__tags">
+            <span class="tag tag--code">Next.js</span>
+            <span class="tag tag--code">Turbopack</span>
+            <span class="tag tag--code">腾讯财经API</span>
+            <span class="tag tag--code">云端存储</span>
+          </div>
+          <a href="https://lee-version.github.io/real_time_fund/" 
+             target="_blank" 
+             rel="noopener noreferrer" 
+             class="btn btn--tertiary project-card__link">
+            查看项目
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section class="skills" id="skills">
+    <div class="container">
+      <h2 class="section-title fade-in">技术栈</h2>
+      <div class="skills__grid fade-in fade-in-delay-1">
+        <span class="tag">JavaScript</span>
+        <span class="tag">TypeScript</span>
+        <span class="tag">React</span>
+        <span class="tag">Next.js</span>
+        <span class="tag">Node.js</span>
+        <span class="tag">Python</span>
+        <span class="tag">HTML/CSS</span>
+        <span class="tag">Tailwind CSS</span>
+        <span class="tag">Supabase</span>
+        <span class="tag">Plotly.js</span>
+        <span class="tag">Git</span>
+        <span class="tag">GitHub Pages</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" id="contact">
+    <div class="container footer__inner">
+      <p class="footer__copy">© 2024 Lee. All rights reserved.</p>
+      <ul class="footer__links">
+        <li>
+          <a href="https://github.com/lee-version" 
+             target="_blank" 
+             rel="noopener noreferrer" 
+             class="footer__link"
+             aria-label="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    // ========================================
+    // Navigation scroll effect
+    // ========================================
+    const nav = document.getElementById('nav');
+    let lastScrollY = 0;
+
+    function handleScroll() {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > 50) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+      
+      lastScrollY = currentScrollY;
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // ========================================
+    // Smooth scroll for anchor links
+    // ========================================
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          const navHeight = nav.offsetHeight;
+          const targetPosition = target.getBoundingClientRect().top + window.scrollY - navHeight;
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // ========================================
+    // Intersection Observer for fade-in animations
+    // ========================================
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+          fadeObserver.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+      el.style.animationPlayState = 'paused';
+      fadeObserver.observe(el);
+    });
+  </script>
+</body>
+</html>
