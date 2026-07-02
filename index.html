@@ -52,7 +52,7 @@
       -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
       cursor: none;
     }
-    a, button, .btn, .carousel-dot, .carousel-arrow, .nav__link, .tag, .project-card, .academic-card, .dashboard__card, .timeline-h__card, .exp-timeline__card {
+    a, button, .btn, .carousel-dot, .carousel-arrow, .nav__link, .tag, .project-card, .academic-card, .timeline-h__card, .exp-timeline__card {
       cursor: none;
     }
     .custom-cursor {
@@ -429,7 +429,7 @@
       width: 2px; background: var(--color-overlay-3); transform: translateX(-50%);
     }
     .exp-timeline__item {
-      display: flex; align-items: flex-start; position: relative; margin-bottom: var(--space-4);
+      display: flex; align-items: flex-start; position: relative; margin-bottom: var(--space-2);
     }
     .exp-timeline__item:last-child { margin-bottom: 0; }
     .exp-timeline__item:nth-child(odd) { justify-content: flex-start; }
@@ -468,46 +468,283 @@
     .exp-timeline__summary { font-size: 14px; color: var(--color-text-secondary); line-height: 1.5; }
     .exp-timeline__detail { margin-top: var(--space-2); font-size: 14px; color: var(--color-text-secondary); line-height: 1.6; border-top: 1px solid var(--color-overlay-1); padding-top: var(--space-2); }
 
-    /* Workflow - horizontal snake layout */
-    .workflow { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-3) 0; max-width: 900px; margin: 0 auto; }
-    .workflow__row { display: grid; grid-template-columns: 1fr 36px 1fr; align-items: center; gap: 0; }
-    .workflow__row--single { grid-template-columns: 1fr; justify-items: center; }
-    .workflow__row--sub { grid-template-columns: 1fr 1fr; justify-items: center; padding: var(--space-2) 0; }
-    .workflow__node {
-      background: var(--color-card); border: 1px solid var(--color-overlay-3);
-      border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3);
-      font-size: 14px; font-weight: 500; text-align: center;
-      transition: all 0.4s ease; position: relative;
+    /* ===== Workflow Diagram - Reference Design ===== */
+    .workflow-container {
+      background: linear-gradient(180deg, rgba(18,19,20,0.95) 0%, rgba(10,11,12,0.98) 100%);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: var(--space-4);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.08),
+        0 8px 32px rgba(0,0,0,0.4);
     }
-    .workflow__node.glow { animation: nodeGlow 1.5s ease-in-out; }
-    .workflow__node.small { font-size: 12px; padding: var(--space-1) var(--space-2); max-width: 220px; }
-    .workflow__arrow-h {
-      display: flex; align-items: center; justify-content: center; position: relative;
+
+    /* Header */
+    .workflow-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+      flex-wrap: wrap;
     }
-    .workflow__arrow-h::before {
-      content: ''; width: 28px; height: 2px; background: var(--color-brand);
+    .workflow-header__left {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      flex: 1;
+      min-width: 280px;
     }
-    .workflow__arrow-h::after {
-      content: ''; width: 0; height: 0;
-      border-top: 5px solid transparent; border-bottom: 5px solid transparent;
-      border-left: 7px solid var(--color-brand);
-      position: absolute; right: 2px;
+    .workflow-header__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(50,240,140,0.1);
+      border: 1px solid rgba(50,240,140,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
-    .workflow__arrow-v {
-      display: flex; flex-direction: column; align-items: center; padding: 4px 0;
+    .workflow-header__icon svg {
+      width: 22px;
+      height: 22px;
+      color: var(--color-brand);
     }
-    .workflow__arrow-v::before {
-      content: ''; width: 2px; height: 20px; background: var(--color-brand);
+    .workflow-header__title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
     }
-    .workflow__arrow-v::after {
-      content: ''; width: 0; height: 0;
-      border-left: 5px solid transparent; border-right: 5px solid transparent;
-      border-top: 6px solid var(--color-brand);
+    .workflow-header__desc {
+      font-size: 12px;
+      color: var(--color-text-tertiary);
+      line-height: 1.6;
+      max-width: 480px;
     }
-    .workflow__sub { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: var(--space-1) 0; }
-    .workflow__sub-item { font-size: 12px; color: var(--color-text-tertiary); }
-    .workflow__branch { display: flex; gap: var(--space-2); flex-wrap: wrap; justify-content: center; }
-    .workflow__branch .workflow__node { max-width: 240px; }
+    .workflow-header__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .workflow-header__tag {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--color-brand);
+      background: rgba(50,240,140,0.08);
+      border: 1px solid rgba(50,240,140,0.15);
+      padding: 4px 12px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    /* Row Layout */
+    .workflow-row {
+      display: flex;
+      align-items: stretch;
+      gap: 8px;
+      margin-bottom: var(--space-3);
+    }
+    .workflow-row--reverse {
+      flex-direction: row-reverse;
+    }
+
+    /* Arrow */
+    .workflow-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 28px;
+      color: var(--color-brand);
+    }
+    .workflow-arrow svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Card */
+    .workflow-card {
+      flex: 1;
+      min-width: 0;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 16px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .workflow-card:hover {
+      border-color: rgba(50,240,140,0.2);
+      background: rgba(255,255,255,0.05);
+      transform: translateY(-2px);
+    }
+    .workflow-card__num {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(50,240,140,0.12);
+      border: 1px solid rgba(50,240,140,0.3);
+      color: var(--color-brand);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-code);
+    }
+    .workflow-card__title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin: 36px 0 10px 0;
+      line-height: 1.4;
+    }
+    .workflow-card__icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(50,240,140,0.08);
+      border: 1px solid rgba(50,240,140,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    .workflow-card__icon svg {
+      width: 18px;
+      height: 18px;
+      color: var(--color-brand);
+    }
+    .workflow-card__list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .workflow-card__list li {
+      font-size: 11px;
+      color: var(--color-text-tertiary);
+      padding: 3px 0;
+      padding-left: 10px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .workflow-card__list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--color-brand);
+      opacity: 0.5;
+    }
+
+    /* Branch line from step 6 */
+    .workflow-branch-line {
+      display: flex;
+      justify-content: flex-end;
+      padding-right: calc((100% - 40px) / 6 + 20px);
+      height: 24px;
+      position: relative;
+    }
+    .workflow-branch-line::before {
+      content: '';
+      position: absolute;
+      right: calc((100% - 40px) / 6 + 20px);
+      top: 0;
+      width: 1px;
+      height: 24px;
+      background: linear-gradient(to bottom, var(--color-brand), transparent);
+      opacity: 0.5;
+    }
+
+    /* Branch sub-cards inside card 07 */
+    .workflow-subcards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .workflow-subcard {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+    .workflow-subcard__icon {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+    .workflow-subcard__title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: 2px;
+    }
+    .workflow-subcard__desc {
+      font-size: 10px;
+      color: var(--color-text-tertiary);
+    }
+
+    /* Bottom Features */
+    .workflow-features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .workflow-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .workflow-feature__icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(50,240,140,0.08);
+      border: 1px solid rgba(50,240,140,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .workflow-feature__icon svg {
+      width: 16px;
+      height: 16px;
+      color: var(--color-brand);
+    }
+    .workflow-feature__title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: 3px;
+    }
+    .workflow-feature__desc {
+      font-size: 11px;
+      color: var(--color-text-tertiary);
+      line-height: 1.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .workflow-row { flex-direction: column; }
+      .workflow-row--reverse { flex-direction: column; }
+      .workflow-arrow { transform: rotate(90deg); height: 28px; width: auto; }
+      .workflow-features { grid-template-columns: 1fr 1fr; }
+      .workflow-header { flex-direction: column; }
+    }
 
     /* Carousel */
     .web-project { margin-top: var(--space-4); }
@@ -578,27 +815,26 @@
     .tag--code { font-family: var(--font-code); font-size: 13px; }
 
     /* Skills */
-    .skills { background-color: var(--color-card); }
-    .skills__wrap { max-width: 720px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3) var(--space-4); }
-    .skills__bars { display: flex; flex-direction: column; gap: var(--space-3); }
-    .skill-bar__label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
-    .skill-bar__name { color: var(--color-text-primary); font-weight: 500; display: flex; align-items: center; gap: 6px; }
-    .skill-bar__name-icon { width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; }
-    .skill-bar__val { color: var(--color-brand); font-family: var(--font-code); }
-    .skill-bar__track { height: 8px; background: var(--color-overlay-2); border-radius: 4px; overflow: hidden; }
-    .skill-bar__fill { height: 100%; background: linear-gradient(90deg, var(--color-brand), #00D4AA); border-radius: 4px; width: 0; transition: width 1s ease-out; }
-    .skills__tags { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--space-1); justify-content: center; padding-top: var(--space-3); border-top: 1px solid var(--color-overlay-1); margin-top: var(--space-2); }
-
-    /* Dashboard */
-    .dashboard__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
-    .dashboard__card {
-      background: var(--color-card); border: 1px solid var(--color-overlay-3);
-      border-radius: var(--radius-sm); padding: var(--space-3); text-align: center;
-      transition: border-color var(--transition-fast);
-    }
-    .dashboard__card:hover { border-color: var(--color-brand); }
-    .dashboard__num { font-size: 42px; font-weight: 600; color: var(--color-brand); line-height: 1.1; font-family: var(--font-code); }
-    .dashboard__label { font-size: 14px; color: var(--color-text-tertiary); margin-top: var(--space-1); }
+    .skills { background-color: var(--color-bg); }
+    .skills__wrap { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: var(--space-4); }
+    /* Activity Rings - Apple Watch style */
+    .activity-rings { position: relative; width: 340px; height: 340px; margin: 0 auto; }
+    .activity-rings svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .activity-ring-bg { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 22; stroke-linecap: round; }
+    .activity-ring-arc { fill: none; stroke-width: 22; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+    .activity-ring-arc--move { stroke: #32F08C; filter: drop-shadow(0 0 6px rgba(50,240,140,0.4)); }
+    .activity-ring-arc--exercise { stroke: #00D4AA; filter: drop-shadow(0 0 6px rgba(0,212,170,0.4)); }
+    .activity-ring-arc--stata { stroke: #A3E635; filter: drop-shadow(0 0 6px rgba(163,230,53,0.4)); }
+    .activity-ring-arc--stand { stroke: #10B981; filter: drop-shadow(0 0 6px rgba(16,185,129,0.4)); }
+    /* Activity stats row */
+    .activity-stats { display: flex; justify-content: center; gap: var(--space-3); width: 100%; margin-top: var(--space-2); flex-wrap: wrap; }
+    .activity-stat { text-align: center; min-width: 90px; padding: var(--space-2) var(--space-2); border-radius: 12px; transition: transform var(--transition-fast), background var(--transition-fast); }
+    .activity-stat:hover { transform: translateY(-2px); }
+    .activity-stat__label { font-size: 12px; margin-bottom: 4px; }
+    .activity-stat__value { font-size: 24px; font-weight: 700; font-family: var(--font-code); line-height: 1; }
+    .activity-stat__detail { font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px; }
+    /* Tags below rings */
+    .skills__tags { display: flex; flex-wrap: wrap; gap: var(--space-1); justify-content: center; padding-top: var(--space-3); border-top: 1px solid var(--color-overlay-1); margin-top: var(--space-2); width: 100%; }
 
     /* Academic */
     .academic__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
@@ -640,13 +876,15 @@
       .hero__title { font-size: 42px; }
       .hero__subtitle { font-size: 18px; }
       .projects__grid, .academic__grid { grid-template-columns: 1fr; }
-      .dashboard__grid { grid-template-columns: repeat(2, 1fr); }
       .timeline-h { flex-direction: column; }
       .edu-grid { grid-template-columns: 1fr; }
       .edu-timeline { grid-template-columns: 1fr; }
       .carousel__phone { width: 200px; }
       .nav__links { gap: var(--space-3); }
-      .skills__wrap { grid-template-columns: 1fr; max-width: 400px; }
+      .skills__wrap { max-width: 400px; }
+      .activity-rings { width: 280px; height: 280px; }
+      .activity-stats { gap: var(--space-3); }
+      .activity-stat__value { font-size: 20px; }
       .exp-timeline::before { left: 24px; }
       .exp-timeline__item { justify-content: flex-start !important; padding-left: 52px; }
       .exp-timeline__card { width: 100%; }
@@ -666,12 +904,20 @@
       section { padding: var(--space-5) 0; }
       .hero__title { font-size: 36px; }
       .hero__actions .btn { width: 100%; }
-      .dashboard__grid { grid-template-columns: 1fr 1fr; }
       .carousel__phone { width: 180px; }
       .about__text { font-size: 16px; }
       .footer__inner { flex-direction: column; text-align: center; }
-      .workflow__row { grid-template-columns: 1fr 28px 1fr; }
-      .workflow__node { font-size: 12px; padding: var(--space-1) var(--space-2); }
+      .workflow { padding-left: 28px; }
+      .workflow::before { left: 7px; }
+      .workflow__step::before {
+        left: -28px;
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+      }
+      .workflow__node { padding: var(--space-2); border-radius: 12px; }
+      .workflow__branch { grid-template-columns: 1fr; }
+      .workflow__done { width: 40px; height: 40px; }
     }
   </style>
 </head>
@@ -730,8 +976,8 @@
         </div>
         
         <p class="hero__desc fade-in fade-in-delay-3">
-          从业务痛点到自动化闭环，用代码为企业增效。<br>
-          专注于数据驱动决策与自动化工具开发。
+          擅长数据处理、流程自动化与 AI 应用搭建；<br>
+          期待参与企业 AI 项目落地，用数据与算法创造业务价值。
         </p>
         
         <div class="hero__actions fade-in fade-in-delay-3">
@@ -742,11 +988,11 @@
         <div class="hero__contact fade-in fade-in-delay-4">
           <div class="hero__contact-item">
             <span>📱</span>
-            <a href="tel:+8613800138000">138-0013-8000</a>
+            <a href="tel:+8618758687531">18758687531</a>
           </div>
           <div class="hero__contact-item">
             <span>✉️</span>
-            <a href="mailto:jinqucheng@example.com">jinqucheng@example.com</a>
+            <a href="mailto:jinqucheng@163.com">jinqucheng@163.com</a>
           </div>
         </div>
         
@@ -784,7 +1030,8 @@
           <h3>荣誉奖项</h3>
           <ul class="edu-awards">
             <li>国家奖学金（2022-2023 学年唯一国奖优秀学生典型）</li>
-            <li>特等奖学金 3 次</li>
+            <li>特等奖学金 3 次，一等奖学金 1 次，二等奖学金 2 次</li>
+            <li>上海外国语大学优秀毕业生</li>
             <li>上海外国语大学优秀学生</li>
             <li>中国国际大学生创新大赛上海市银奖</li>
             <li>"知行杯" 上海市大学生社会实践大赛二等奖</li>
@@ -807,13 +1054,13 @@
                 <h3 class="exp-timeline__company">药明康德</h3>
                 <p class="exp-timeline__dept">数据运行-行政数据化</p>
               </div>
-              <span class="exp-timeline__time">2026.04 – 2026.08</span>
+              <span class="exp-timeline__time">2026.04 – 2026.06</span>
             </div>
-            <div class="exp-timeline__summary">搭建 3 个企业级自动化项目，覆盖数据管道、对账分发、工卡换新全场景，效率提升 57%-95%。</div>
+            <div class="exp-timeline__summary">搭建 3 个企业级自动化项目，覆盖数据管道、对账分发、工卡换新全场景。</div>
             <div class="exp-timeline__detail">
-              <p>· 食堂异物率数据自动化体系：Python + 明道云 + SQL Server 全流程闭环，效率提升 90%+，数据准确率 100%</p>
-              <p style="margin-top:4px;">· 滴滴对账单自动化工具：Python + Customtkinter + SMTP，300+ 封邮件批量推送，效率提升 95%</p>
-              <p style="margin-top:4px;">· 企业一卡通工卡换新：Python + MinIO + Oracle/MSSQL，4 万条数据处理，效率提升 57%+</p>
+              <p>· <strong>食堂异物率数据自动化体系</strong>：基于 Python（Pandas/pymssql/Requests）搭建明道云 + SQL Server 自动化数据管道，实现 API 拉取→清洗入库→聚合计算→回传可视化全流程闭环；封装数据库与 API 交互工具类，批量分批插入+事务回滚保障稳定性，替代人工统计，数据准确率 100%</p>
+              <p style="margin-top:4px;">· <strong>滴滴用车费用对账单自动化工具</strong>：Python + Customtkinter + SMTP 开发对账自动化工具，GUI 界面操作，实现订单解析、多部门账单智能拆分、Excel 标准化、300+ 封邮件批量推送；月度对账分发从 2 小时压缩至 3 分钟，零错发零漏发</p>
+              <p style="margin-top:4px;">· <strong>企业一卡通工卡换新自动化项目</strong>：Python 整合 Oracle + MSSQL 双源数据，MinIO 对象存储批量下载员工照片并分类归档；解决 Latin1/GB2312 编码乱码，完成 4 万条数据自动化处理，核实周期从 7 天缩至 3 天</p>
             </div>
           </div>
           <div class="exp-timeline__dot"></div>
@@ -828,10 +1075,11 @@
               </div>
               <span class="exp-timeline__time">2025.11 – 2026.02</span>
             </div>
-            <div class="exp-timeline__summary">4 个债券发行项目底稿制作，10 个项目诚信核查，2 个项目投标。</div>
+            <div class="exp-timeline__summary">独立完成 4 个债券发行项目底稿制作，参与 10 个项目诚信核查与 2 个项目投标，运用 Wind/企业预警通分析区域发债环境与可比公司资质。</div>
             <div class="exp-timeline__detail">
-              <p>· 独立完成 4 个债券发行项目底稿制作，参与 10 个项目的诚信核查，协助完成 2 个项目的投标工作</p>
-              <p style="margin-top:4px;">· 运用 Wind、企业预警通等工具，分析企业区域发债环境及可比公司资质</p>
+              <p>· 负责债券发行底稿制作，严格遵循债权融资全流程操作规范，完成业务调研、资料核查、数据整理及报告撰写工作</p>
+              <p style="margin-top:4px;">· 独立完成 4 个债券发行项目底稿制作，参与 10 个项目的诚信核查，协助完成 2 个项目的投标工作</p>
+              <p style="margin-top:4px;">· 运用 Wind、企业预警通等工具，分析企业区域发债环境及可比公司资质，为项目推进提供数据支持</p>
             </div>
           </div>
         </div>
@@ -844,10 +1092,10 @@
               </div>
               <span class="exp-timeline__time">2025.01 – 2025.04</span>
             </div>
-            <div class="exp-timeline__summary">数据校验与合规审计，通过科目关联性分析识别财务偏差，完成 10 笔报表调整。</div>
+            <div class="exp-timeline__summary">运用重新计算与分析性程序，对客户固定资产及“三费”账户进行多维度审计，验证财务记录真实性，并参与完成 10 笔报表调整。</div>
             <div class="exp-timeline__detail">
-              <p>· 运用重新计算与分析性程序，对客户固定资产及"三费"账户进行多维度审计</p>
-              <p style="margin-top:4px;">· 通过科目关联性分析协助识别财务偏差，参与完成 10 笔报表调整</p>
+              <p>· 数据校验与合规审计：运用重新计算与分析性程序，对客户固定资产及“三费”（管理 / 销售 / 财务费用）账户进行多维度审计，验证财务记录真实性与准确性</p>
+              <p style="margin-top:4px;">· 异常识别与报表调整：通过科目关联性分析协助识别财务偏差，参与完成 10 笔报表调整，确保财报数据透明与逻辑严密</p>
             </div>
           </div>
           <div class="exp-timeline__dot"></div>
@@ -862,10 +1110,11 @@
               </div>
               <span class="exp-timeline__time">2024.07 – 2024.09</span>
             </div>
-            <div class="exp-timeline__summary">SQL 清洗 2 万+条跨部门数据，计算车型 ROI/市占率，撰写深度分析报告。</div>
+            <div class="exp-timeline__summary">利用 SQL 关联清洗销售、成本及项目明细等 2 万+条跨部门数据，计算车型 ROI/单位成本/市占率等指标，撰写分析报告并为管理层投资决策提供数据支撑。</div>
             <div class="exp-timeline__detail">
               <p>· 利用 SQL（WHERE, LEFT JOIN, HAVING 等）关联并清洗销售、成本及项目明细等跨部门复杂数据集（数据量 2 万+）</p>
-              <p style="margin-top:4px;">· 计算各车型投资回报率、单位成本、市占率等多维度指标，量化评估车型盈利能力</p>
+              <p style="margin-top:4px;">· 计算各车型投资回报率、单位成本、市占率等多维度指标，撰写深度分析报告</p>
+              <p style="margin-top:4px;">· 量化评估各车型盈利能力，为管理层生产及投资决策优化提供数据支撑</p>
             </div>
           </div>
         </div>
@@ -895,49 +1144,228 @@
 
       <!-- Workflow Diagram -->
       <div class="fade-in fade-in-delay-2">
-        <h3 style="font-size:16px;font-weight:600;color:var(--color-text-secondary);text-align:center;margin-bottom:var(--space-3);">AI 识别工作流</h3>
-        <div class="workflow" id="workflow">
-          <!-- Row 1: left → right -->
-          <div class="workflow__row">
-            <div class="workflow__node" data-step="0">用户上传健康证图片</div>
-            <div class="workflow__arrow-h"></div>
-            <div class="workflow__node" data-step="1">明道云表单接收 → API 触发</div>
-          </div>
-          <div class="workflow__arrow-v"></div>
-          <!-- Row 2 -->
-          <div class="workflow__row">
-            <div class="workflow__node" data-step="2">Dify AI 平台接收图片 URL</div>
-            <div class="workflow__arrow-h"></div>
-            <div class="workflow__node" data-step="3">GPT-3.5-mini 大模型图像解析<br><span class="workflow__sub-item">提取: 证件有效期、发证日期、文本信息</span></div>
-          </div>
-          <div class="workflow__arrow-v"></div>
-          <!-- Row 3 -->
-          <div class="workflow__row">
-            <div class="workflow__node" data-step="4">日期标准化处理 → YYYY-MM-DD</div>
-            <div class="workflow__arrow-h"></div>
-            <div class="workflow__node" data-step="5">智能条件分支判定</div>
-          </div>
-          <!-- Branch -->
-          <div class="workflow__row--sub">
-            <div class="workflow__node small" data-step="6">有效期充足 → 回写合规</div>
-            <div class="workflow__node small" data-step="6">即将到期 → 回写预警</div>
-          </div>
-          <div class="workflow__arrow-v"></div>
-          <!-- Row 4 -->
-          <div class="workflow__row">
-            <div class="workflow__node" data-step="7">三套自动化工作流</div>
-            <div class="workflow__arrow-h"></div>
-            <div class="workflow__node" data-step="8">筛选在职 + 有效期 &lt; 30天<br>→ 自动推送预警邮件</div>
-          </div>
-          <!-- Sub items for row 4 left -->
-          <div class="workflow__row--sub">
-            <div class="workflow__sub">
-              <span class="workflow__sub-item">· 手动刷新工作流</span>
-              <span class="workflow__sub-item">· 每日定时更新工作流（凌晨）</span>
-              <span class="workflow__sub-item">· 每日邮件预警工作流（上午 9 点）</span>
+        <div class="workflow-container" id="workflow">
+
+          <!-- Header -->
+          <div class="workflow-header">
+            <div class="workflow-header__left">
+              <div class="workflow-header__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              </div>
+              <div>
+                <div class="workflow-header__title">AI 智能风险识别 — 员工健康证自动化核验预警</div>
+                <div class="workflow-header__desc">基于明道云低代码平台 + Dify AI 工作流 + GPT-3.5-mini 大模型，搭建员工健康证 AI 智能识别与过期预警自动化体系。统筹管理 3000+ 在职员工健康证数据，实现上传即识别、校验即预警的全自动闭环。</div>
+              </div>
             </div>
-            <div style="display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--color-brand);">✓</div>
+            <div class="workflow-header__tags">
+              <span class="workflow-header__tag">明道云</span>
+              <span class="workflow-header__tag">Dify AI</span>
+              <span class="workflow-header__tag">GPT-3.5-mini</span>
+              <span class="workflow-header__tag">HTTP 接口</span>
+              <span class="workflow-header__tag">定时自动化</span>
+            </div>
           </div>
+
+          <!-- Row 1: Steps 01-06 -->
+          <div class="workflow-row">
+            <!-- Step 01 -->
+            <div class="workflow-card">
+              <div class="workflow-card__num">01</div>
+              <div class="workflow-card__title">用户上传<br>健康证图片</div>
+              <div class="workflow-card__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              </div>
+              <ul class="workflow-card__list">
+                <li>员工通过系统</li>
+                <li>上传健康证图片</li>
+              </ul>
+            </div>
+
+            <div class="workflow-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+
+            <!-- Step 02 -->
+            <div class="workflow-card">
+              <div class="workflow-card__num">02</div>
+              <div class="workflow-card__title">明道云表单接收<br>→ API 触发</div>
+              <div class="workflow-card__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+              </div>
+              <ul class="workflow-card__list">
+                <li>明道云自动接收图片</li>
+                <li>并触发后续流程</li>
+              </ul>
+            </div>
+
+            <div class="workflow-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+
+            <!-- Step 03 -->
+            <div class="workflow-card">
+              <div class="workflow-card__num">03</div>
+              <div class="workflow-card__title">Dify AI 平台<br>接收图片 URL</div>
+              <div class="workflow-card__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+              </div>
+              <ul class="workflow-card__list">
+                <li>明道云通过 HTTP 接口</li>
+                <li>将图片 URL 发送至<br>Dify AI 平台</li>
+              </ul>
+            </div>
+
+            <div class="workflow-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+
+            <!-- Step 04 -->
+            <div class="workflow-card">
+              <div class="workflow-card__num">04</div>
+              <div class="workflow-card__title">GPT-3.5-mini<br>大模型图像解析</div>
+              <div class="workflow-card__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+              </div>
+              <ul class="workflow-card__list">
+                <li>提取：证件有效期、发证日期、</li>
+                <li>姓名、证件编号等关键信息</li>
+                <li>结构化输出解析结果</li>
+              </ul>
+            </div>
+
+            <div class="workflow-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+
+            <!-- Step 05 -->
+            <div class="workflow-card">
+              <div class="workflow-card__num">05</div>
+              <div class="workflow-card__title">日期标准化处理<br>→ YYYY-MM-DD</div>
+              <div class="workflow-card__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              </div>
+              <ul class="workflow-card__list">
+                <li>将解析出的日期字段</li>
+                <li>统一标准格式，便于校验</li>
+              </ul>
+            </div>
+
+            <div class="workflow-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+
+            <!-- Step 06 -->
+            <div class="workflow-card">
+              <div class="workflow-card__num">06</div>
+              <div class="workflow-card__title">智能条件<br>分支判定</div>
+              <div class="workflow-card__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+              </div>
+              <ul class="workflow-card__list">
+                <li>根据证件有效期、状态等</li>
+                <li>进行智能条件判断</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Branch line from 06 -->
+          <div class="workflow-branch-line"></div>
+
+          <!-- Row 2: Steps 09 → 08 → 07 (reverse direction) -->
+          <div class="workflow-row workflow-row--reverse">
+            <!-- Step 09 -->
+            <div class="workflow-card">
+              <div class="workflow-card__num">09</div>
+              <div class="workflow-card__title">筛选在职 + 有效期 &lt; 30 天<br>→ 自动推送预警邮件</div>
+              <div class="workflow-card__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              </div>
+              <ul class="workflow-card__list">
+                <li>自动触发预警通知</li>
+                <li>提醒相关人员及时处理</li>
+              </ul>
+            </div>
+
+            <div class="workflow-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+
+            <!-- Step 08 -->
+            <div class="workflow-card">
+              <div class="workflow-card__num">08</div>
+              <div class="workflow-card__title">三套自动化<br>工作流</div>
+              <div class="workflow-card__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+              </div>
+              <ul class="workflow-card__list">
+                <li>定时任务自动执行全流程处理</li>
+                <li>确保数据及时更新与预警推送</li>
+              </ul>
+            </div>
+
+            <div class="workflow-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </div>
+
+            <!-- Step 07 with branch sub-cards -->
+            <div class="workflow-card">
+              <div class="workflow-card__num">07</div>
+              <div class="workflow-card__title">有效期判定</div>
+              <div class="workflow-subcards">
+                <div class="workflow-subcard">
+                  <div class="workflow-subcard__icon">✅</div>
+                  <div class="workflow-subcard__title">有效期充足</div>
+                  <div class="workflow-subcard__desc">→ 回写合规</div>
+                </div>
+                <div class="workflow-subcard">
+                  <div class="workflow-subcard__icon">⚠️</div>
+                  <div class="workflow-subcard__title">即将到期 / 已过期</div>
+                  <div class="workflow-subcard__desc">→ 回写预警</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Features -->
+          <div class="workflow-features">
+            <div class="workflow-feature">
+              <div class="workflow-feature__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              </div>
+              <div>
+                <div class="workflow-feature__title">全自动闭环</div>
+                <div class="workflow-feature__desc">上传即识别，校验即回写，预警自动触发</div>
+              </div>
+            </div>
+            <div class="workflow-feature">
+              <div class="workflow-feature__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              </div>
+              <div>
+                <div class="workflow-feature__title">智能识别</div>
+                <div class="workflow-feature__desc">AI 提取关键信息，准确率高，支持多场景</div>
+              </div>
+            </div>
+            <div class="workflow-feature">
+              <div class="workflow-feature__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+              </div>
+              <div>
+                <div class="workflow-feature__title">实时预警</div>
+                <div class="workflow-feature__desc">到期前 30 天自动提醒，降低合规风险</div>
+              </div>
+            </div>
+            <div class="workflow-feature">
+              <div class="workflow-feature__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              </div>
+              <div>
+                <div class="workflow-feature__title">安全可靠</div>
+                <div class="workflow-feature__desc">数据加密，流程可追溯，保障信息安全</div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -1036,63 +1464,55 @@
     <div class="container">
       <h2 class="section-title fade-in">技能</h2>
       <div class="skills__wrap fade-in fade-in-delay-1">
-        <!-- Progress Bars -->
-        <div class="skills__bars">
-          <div>
-            <div class="skill-bar__label"><span class="skill-bar__name"><span class="skill-bar__name-icon">🐍</span>Python</span><span class="skill-bar__val">90%</span></div>
-            <div class="skill-bar__track"><div class="skill-bar__fill" data-width="90"></div></div>
+        <!-- Apple Watch style Activity Rings -->
+        <div class="activity-rings">
+          <svg viewBox="0 0 340 340">
+            <!-- Background tracks -->
+            <circle class="activity-ring-bg" cx="170" cy="170" r="148"></circle>
+            <circle class="activity-ring-bg" cx="170" cy="170" r="118"></circle>
+            <circle class="activity-ring-bg" cx="170" cy="170" r="88"></circle>
+            <circle class="activity-ring-bg" cx="170" cy="170" r="58"></circle>
+            <!-- Progress arcs -->
+            <circle class="activity-ring-arc activity-ring-arc--move" cx="170" cy="170" r="148"
+              data-percent="90" stroke-dasharray="929.91" stroke-dashoffset="929.91"></circle>
+            <circle class="activity-ring-arc activity-ring-arc--exercise" cx="170" cy="170" r="118"
+              data-percent="85" stroke-dasharray="741.42" stroke-dashoffset="741.42"></circle>
+            <circle class="activity-ring-arc activity-ring-arc--stata" cx="170" cy="170" r="88"
+              data-percent="80" stroke-dasharray="552.92" stroke-dashoffset="552.92"></circle>
+            <circle class="activity-ring-arc activity-ring-arc--stand" cx="170" cy="170" r="58"
+              data-percent="75" stroke-dasharray="364.42" stroke-dashoffset="364.42"></circle>
+          </svg>
+        </div>
+        <!-- Activity stats -->
+        <div class="activity-stats">
+          <div class="activity-stat" style="border:1px solid #32F08C; background:rgba(50,240,140,0.08);">
+            <div class="activity-stat__label" style="color:#32F08C;">Python</div>
+            <div class="activity-stat__value" style="color:#32F08C;">90%</div>
           </div>
-          <div>
-            <div class="skill-bar__label"><span class="skill-bar__name"><span class="skill-bar__name-icon">🗄️</span>SQL</span><span class="skill-bar__val">85%</span></div>
-            <div class="skill-bar__track"><div class="skill-bar__fill" data-width="85"></div></div>
+          <div class="activity-stat" style="border:1px solid #00D4AA; background:rgba(0,212,170,0.08);">
+            <div class="activity-stat__label" style="color:#00D4AA;">SQL</div>
+            <div class="activity-stat__value" style="color:#00D4AA;">85%</div>
           </div>
-          <div>
-            <div class="skill-bar__label"><span class="skill-bar__name"><span class="skill-bar__name-icon">📊</span>SPSS</span><span class="skill-bar__val">75%</span></div>
-            <div class="skill-bar__track"><div class="skill-bar__fill" data-width="75"></div></div>
+          <div class="activity-stat" style="border:1px solid #A3E635; background:rgba(163,230,53,0.08);">
+            <div class="activity-stat__label" style="color:#A3E635;">Stata</div>
+            <div class="activity-stat__value" style="color:#A3E635;">80%</div>
           </div>
-          <div>
-            <div class="skill-bar__label"><span class="skill-bar__name"><span class="skill-bar__name-icon">📈</span>Power BI</span><span class="skill-bar__val">70%</span></div>
-            <div class="skill-bar__track"><div class="skill-bar__fill" data-width="70"></div></div>
-          </div>
-          <div>
-            <div class="skill-bar__label"><span class="skill-bar__name"><span class="skill-bar__name-icon">⚛️</span>JavaScript</span><span class="skill-bar__val">65%</span></div>
-            <div class="skill-bar__track"><div class="skill-bar__fill" data-width="65"></div></div>
-          </div>
-          <div>
-            <div class="skill-bar__label"><span class="skill-bar__name"><span class="skill-bar__name-icon">🌐</span>英语水平</span><span class="skill-bar__val">CET-6 636 / 雅思 7.0</span></div>
-            <div class="skill-bar__track"><div class="skill-bar__fill" data-width="88"></div></div>
+          <div class="activity-stat" style="border:1px solid #10B981; background:rgba(16,185,129,0.08);">
+            <div class="activity-stat__label" style="color:#10B981;">SPSS</div>
+            <div class="activity-stat__value" style="color:#10B981;">75%</div>
           </div>
         </div>
         <!-- Tag Cloud -->
         <div class="skills__tags">
           <span class="tag">Python</span>
-          <span class="tag">JavaScript</span>
-          <span class="tag">TypeScript</span>
           <span class="tag">SQL</span>
           <span class="tag">Pandas</span>
-          <span class="tag">React</span>
-          <span class="tag">Next.js</span>
-          <span class="tag">Stata</span>
           <span class="tag">SPSS</span>
           <span class="tag">Power BI</span>
+          <span class="tag">Excel</span>
+          <span class="tag">Stata</span>
           <span class="tag tag--code">Git</span>
-          <span class="tag tag--code">GitHub Pages</span>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Dashboard -->
-  <section id="dashboard">
-    <div class="container">
-      <h2 class="section-title fade-in">数据看板</h2>
-      <div class="dashboard__grid fade-in fade-in-delay-1">
-        <div class="dashboard__card"><div class="dashboard__num" data-count="3000">0</div><div class="dashboard__label">管理员工数</div></div>
-        <div class="dashboard__card"><div class="dashboard__num" data-count="95" data-suffix="%">0</div><div class="dashboard__label">对账效率提升</div></div>
-        <div class="dashboard__card"><div class="dashboard__num" data-count="100" data-suffix="%">0</div><div class="dashboard__label">数据准确率</div></div>
-        <div class="dashboard__card"><div class="dashboard__num" data-count="90" data-suffix="%">0</div><div class="dashboard__label">核验效率提升</div></div>
-        <div class="dashboard__card"><div class="dashboard__num" data-count="57" data-suffix="%+">0</div><div class="dashboard__label">工卡效率提升</div></div>
-        <div class="dashboard__card"><div class="dashboard__num" data-count="300" data-suffix="+">0</div><div class="dashboard__label">部门邮件推送</div></div>
       </div>
     </div>
   </section>
@@ -1138,7 +1558,7 @@
     });
 
     // Hover effect on interactive elements
-    const hoverEls = document.querySelectorAll('a, button, .btn, .carousel-dot, .carousel-arrow, .nav__link, .tag, .project-card, .academic-card, .dashboard__card, .timeline-h__card, .exp-timeline__card');
+    const hoverEls = document.querySelectorAll('a, button, .btn, .carousel-dot, .carousel-arrow, .nav__link, .tag, .project-card, .academic-card, .timeline-h__card, .exp-timeline__card');
     hoverEls.forEach(el => {
       el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
       el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
@@ -1254,44 +1674,22 @@
     initCarousel('carousel-fund', 'carousel-fund-dots');
 
     // ========================================
-    // Progress bars animation
+    // Skill rings animation
     // ========================================
-    const progressBars = document.querySelectorAll('.skill-bar__fill');
-    const progressObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.width = entry.target.dataset.width + '%';
-          progressObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.3 });
-    progressBars.forEach(bar => progressObserver.observe(bar));
-
-    // ========================================
-    // Count-up animation for dashboard
-    // ========================================
-    const countEls = document.querySelectorAll('.dashboard__num');
-    const countObserver = new IntersectionObserver((entries) => {
+    const ringFills = document.querySelectorAll('.activity-ring-arc');
+    const ringObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const el = entry.target;
-          const target = parseInt(el.dataset.count);
-          const suffix = el.dataset.suffix || '';
-          const duration = 1500;
-          const startTime = performance.now();
-          
-          function step(now) {
-            const progress = Math.min((now - startTime) / duration, 1);
-            const ease = 1 - Math.pow(1 - progress, 3);
-            el.textContent = Math.round(target * ease) + suffix;
-            if (progress < 1) requestAnimationFrame(step);
-          }
-          requestAnimationFrame(step);
-          countObserver.unobserve(el);
+          const percent = parseFloat(el.dataset.percent) || 0;
+          const dashArray = parseFloat(el.getAttribute('stroke-dasharray'));
+          const offset = dashArray - (dashArray * percent / 100);
+          el.style.strokeDashoffset = offset;
+          ringObserver.unobserve(el);
         }
       });
     }, { threshold: 0.3 });
-    countEls.forEach(el => countObserver.observe(el));
+    ringFills.forEach(ring => ringObserver.observe(ring));
 
     // ========================================
     // Three.js Import Map
